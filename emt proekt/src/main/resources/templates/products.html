@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Products</title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+          integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
+          crossorigin="anonymous">
+    <script src="assets/vendor/jquery/jquery.min.js"></script>
+    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dc/4.2.0/dc.js"></script>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/dc/4.2.0/style/dc.css">
+    <script type="text/javascript" src="https://dc-js.github.io/dc.js/js/d3.js"></script>
+    <style>
+        table{
+            overflow-y:scroll;
+            height:200px;
+            width: 300px;
+        }
+    </style>
+</head>
+<body style="background-color: #06F874;">
+<!-- Navigation -->
+<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="/home">Flash Sport</a>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a class="nav-link" href="/admin">Administrator</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/products">Products</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/statistics">Statistics</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/user-profile">User Profile</a>
+                </li>
+                <li class="nav-item" sec:authorize="!isAuthenticated()">
+                    <a class="nav-link" href="/login">Login</a>
+                </li>
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a class="nav-link" href="/logout">Log Out</a>
+                </li>
+                <li class="nav-item" sec:authorize="!isAuthenticated()">
+                    <a class="nav-link" href="/logUp">Log Up</a>
+                </li>
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a class="nav-link" sec:authentication="name"></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+<div class="content" style="margin-top: 100px;margin-left: 30px;width: 1285px;">
+    <div class="row">
+        <div class="col-12 card" style="height: 300px">
+            <div th:if="${param.message}">
+                <h2 class="text-center text-primary" th:text="${param.message}"></h2>
+            </div>
+
+            <div th:if="${param.error}">
+                <h2 class="text-center text-danger" th:text="${param.error}"></h2>
+            </div>
+            <h2>Products</h2>
+            <br>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>image</th>
+                        <th>name</th>
+                        <th>localDateTime</th>
+                        <th>description</th>
+                        <th>quantity</th>
+                        <th>cost</th>
+                        <th>manufacturer</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="product: ${products}" th:if="${product.getQuantity()>0}">
+                        <td><img th:src="${product.getProductImage()}"
+                                 width="100px"height="100px"></td>
+                        <td th:text="${product.getName()}"></td>
+                        <td th:text="${product.getLocalDateTime()}"></td>
+                        <td th:text="${product.getDescription()}"></td>
+                        <td th:text="${product.getQuantity()}"></td>
+                        <td th:text="${product.getCost()}"></td>
+                        <td th:text="${product.getManufacturer().getName()}">{{product.manufacturer.name}}</td>
+                        <td>
+                            <form th:action="@{/shopping-carts/{id}/add-product(id=${product.getId()})}" th:method="post">
+                                <button type="submit" class="btn btn-primary"
+                                        sec:authorize="hasRole('ROLE_USER')">Add to Cart</button>
+                            </form>
+                        </td>
+                        <td>
+                            <a th:href="@{/products/{id}/edit(id=${product.getId()})}" sec:authorize="hasRole('ROLE_USER')" class="btn btn-secondary">Edit</a>
+                        </td>
+                        <td>
+                            <form th:action="@{/shopping-carts/{id}/remove-product(id=${product.getId()})}" th:method="post">
+                                <button type="submit" class="btn btn-danger "
+                                        sec:authorize="hasRole('ROLE_USER')">Remove from cart</button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col mb-2">
+            <div class="row">
+                <a class="btn btn-secondary btn-block" href="/products/add-product"
+                   sec:authorize="hasRole('ROLE_USER')">Add new Product</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Footer -->
+<footer class="py-5 bg-primary" style="position: fixed;left: 0;bottom: 0; width: 100%;">
+    <div class="container">
+        <p class="m-0 text-center text-white">Copyright &copy; Flash Sport</p>
+    </div>
+</footer>
+</body>
+</html>

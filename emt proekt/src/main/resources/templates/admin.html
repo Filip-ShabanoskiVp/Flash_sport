@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin</title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+          integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
+          crossorigin="anonymous">
+    <script src="assets/vendor/jquery/jquery.min.js"></script>
+</head>
+<body style="background-color: #06F874;">
+<!-- Navigation -->
+<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="/home">Flash Sport</a>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a class="nav-link" href="/admin">Administrator</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/products">Products</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/statistics">Statistics</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/user-profile">User Profile</a>
+                </li>
+                <li class="nav-item" sec:authorize="!isAuthenticated()">
+                    <a class="nav-link" href="/login">Login</a>
+                </li>
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a class="nav-link" href="/logout">Log Out</a>
+                </li>
+                <li class="nav-item" sec:authorize="!isAuthenticated()">
+                    <a class="nav-link" href="/logUp" >Log Up</a>
+                </li>
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a class="nav-link" sec:authentication="name"></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="content" style="margin-top: 100px;margin-left: 30px;width: 1285px;">
+    <div class="row">
+        <div class="col-12 card" style="height: 300px">
+            <h2>All Users</h2>
+            <br>
+            <div class="table-responsive" style=" height:150px;overflow:auto;
+                        margin-top:20px;">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Email</th>
+                        <th>Embg</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="user: ${users}" th:if="${user.getUsername()!='admin'}">
+                        <td th:text="${user.getUsername()}"></td>
+                        <td th:text="${user.getFirstName()}"></td>
+                        <td th:text="${user.getLastName()}"></td>
+                        <td th:text="${user.getEmail()}"></td>
+                        <td th:text="${user.getEmbg()}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Footer -->
+<footer class="py-5 bg-primary" style="position: fixed;left: 0;bottom: 0; width: 100%;">
+    <div class="container">
+        <p class="m-0 text-center text-white">Copyright &copy; Flash Sport</p>
+    </div>
+</footer>
+</body>
+</html>
